@@ -1,4 +1,5 @@
 mod utils;
+use js_sys::Math;
 use std::fmt;
 
 use wasm_bindgen::prelude::*;
@@ -73,6 +74,18 @@ fn build_ship(universe: &mut Universe, ship: Ship, x: u32, y: u32) {
     }
 }
 
+fn random_universe(width: u32, height: u32) -> Vec<Cell> {
+    (0..width * height)
+        .map(|_i| {
+            if Math::random() > 0.5 {
+                Cell::Alive
+            } else {
+                Cell::Dead
+            }
+        })
+        .collect()
+}
+
 /// Public methods, exported to JavaScript.
 #[wasm_bindgen]
 impl Universe {
@@ -80,7 +93,8 @@ impl Universe {
         let width = 64;
         let height = 64;
 
-        let cells = (0..width * height).map(|_i| Cell::Dead).collect();
+        // let cells = (0..width * height).map(|_i| Cell::Dead).collect();
+        let cells = random_universe(width, height);
 
         let mut universe = Universe {
             width,
@@ -88,7 +102,7 @@ impl Universe {
             cells,
         };
 
-        build_ship(&mut universe, Ship::Glider, 32, 32);
+        // build_ship(&mut universe, Ship::Glider, 32, 32);
 
         universe
     }
