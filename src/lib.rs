@@ -48,6 +48,31 @@ impl Universe {
     }
 }
 
+enum Ship {
+    Glider,
+}
+
+fn build_ship(universe: &mut Universe, ship: Ship, x: u32, y: u32) {
+    match ship {
+        Ship::Glider => {
+            let idx = universe.get_index(x, y);
+            universe.cells[idx] = Cell::Alive;
+
+            let idx = universe.get_index(x + 1, y);
+            universe.cells[idx] = Cell::Alive;
+
+            let idx = universe.get_index(x + 2, y);
+            universe.cells[idx] = Cell::Alive;
+
+            let idx = universe.get_index(x, y + 1);
+            universe.cells[idx] = Cell::Alive;
+
+            let idx = universe.get_index(x + 1, y + 2);
+            universe.cells[idx] = Cell::Alive;
+        }
+    }
+}
+
 /// Public methods, exported to JavaScript.
 #[wasm_bindgen]
 impl Universe {
@@ -55,21 +80,17 @@ impl Universe {
         let width = 64;
         let height = 64;
 
-        let cells = (0..width * height)
-            .map(|i| {
-                if i % 2 == 0 || i % 7 == 0 {
-                    Cell::Alive
-                } else {
-                    Cell::Dead
-                }
-            })
-            .collect();
+        let cells = (0..width * height).map(|_i| Cell::Dead).collect();
 
-        Universe {
+        let mut universe = Universe {
             width,
             height,
             cells,
-        }
+        };
+
+        build_ship(&mut universe, Ship::Glider, 32, 32);
+
+        universe
     }
 
     pub fn width(&self) -> u32 {

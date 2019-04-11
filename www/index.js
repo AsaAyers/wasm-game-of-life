@@ -79,4 +79,6 @@ const renderLoop = () => {
 };
 drawGrid();
 drawCells();
-requestAnimationFrame(renderLoop);
+// requestAnimationFrame(renderLoop);
+
+canvas.addEventListener('click', renderLoop)
